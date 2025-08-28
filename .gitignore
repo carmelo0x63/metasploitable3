@@ -10,3 +10,4 @@ resources/windows_pre_downloads/
 *.DS_Store
 *.box
 *.iso
+*.ori
