@@ -1,0 +1,206 @@
+{
+  "builders": [
+    {
+      "boot_command": [
+        "<esc><wait>",
+        "<esc><wait>",
+        "<enter><wait>",
+        "/install/vmlinuz",
+        " auto=true",
+        " priority=critical",
+        " initrd=/install/initrd.gz",
+        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
+        " -- ",
+        "<enter>"
+      ],
+      "boot_wait": "20s",
+      "communicator": "ssh",
+      "cpus": 2,
+      "disk_size": 40000,
+      "guest_os_type": "ubuntu",
+      "http_directory": "{{template_dir}}/../http",
+      "http_port_max": 9001,
+      "http_port_min": 9001,
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_url": "{{user `iso_url`}}",
+      "memory": 4096,
+      "parallels_tools_flavor": "lin",
+      "shutdown_command": "echo 'packer' | sudo -S shutdown -P now",
+      "ssh_password": "vagrant",
+      "ssh_timeout": "3h",
+      "ssh_username": "vagrant",
+      "type": "parallels-iso",
+      "vm_name": "metasploitable3-ub1404"
+    },
+    {
+      "boot_command": [
+        "<esc><wait>",
+        "<esc><wait>",
+        "<enter><wait>",
+        "/install/vmlinuz",
+        " auto=true",
+        " priority=critical",
+        " initrd=/install/initrd.gz",
+        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
+        " -- ",
+        "<enter>"
+      ],
+      "boot_wait": "20s",
+      "communicator": "ssh",
+      "disk_size": 40000,
+      "guest_os_type": "ubuntu-64",
+      "headless": false,
+      "http_directory": "{{template_dir}}/../http",
+      "http_port_max": 9001,
+      "http_port_min": 9001,
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_url": "{{user `iso_url`}}",
+      "shutdown_command": "echo 'packer' | sudo -S shutdown -P now",
+      "ssh_password": "vagrant",
+      "ssh_timeout": "3h",
+      "ssh_username": "vagrant",
+      "tools_upload_flavor": "linux",
+      "type": "vmware-iso",
+      "vm_name": "metasploitable3-ub1404",
+      "vmx_data": {
+        "cpuid.coresPerSocket": "2",
+        "memsize": "4096",
+        "numvcpus": "2",
+        "scsi0.virtualDev": "lsisas1068"
+      }
+    },
+    {
+      "boot_command": [
+        "<esc><wait>",
+        "<esc><wait>",
+        "<enter><wait>",
+        "/install/vmlinuz",
+        " auto=true",
+        " priority=critical",
+        " initrd=/install/initrd.gz",
+        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
+        " -- ",
+        "<enter>"
+      ],
+      "boot_wait": "20s",
+      "communicator": "ssh",
+      "disk_size": 40000,
+      "guest_os_type": "Ubuntu_64",
+      "headless": false,
+      "http_directory": "{{template_dir}}/../http",
+      "http_port_max": 9001,
+      "http_port_min": 9001,
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_url": "{{user `iso_url`}}",
+      "shutdown_command": "echo 'packer' | sudo -S shutdown -P now",
+      "ssh_password": "vagrant",
+      "ssh_timeout": "3h",
+      "ssh_username": "vagrant",
+      "type": "virtualbox-iso",
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "4096"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "2"
+        ]
+      ],
+      "vm_name": "metasploitable3-ub1404"
+    },
+    {
+      "accelerator": "kvm",
+      "boot_command": [
+        "<esc><wait>",
+        "<esc><wait>",
+        "<enter><wait>",
+        "/install/vmlinuz",
+        " auto=true",
+        " priority=critical",
+        " initrd=/install/initrd.gz",
+        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
+        " -- ",
+        "<enter>"
+      ],
+      "boot_wait": "20s",
+      "communicator": "ssh",
+      "disk_size": "40000M",
+      "headless": false,
+      "http_directory": "{{template_dir}}/../http",
+      "http_port_max": 9001,
+      "http_port_min": 9001,
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_url": "{{user `iso_url`}}",
+      "qemuargs": [
+        [
+          "-m",
+          "4096"
+        ],
+        [
+          "-smp",
+          "2"
+        ],
+        [
+          "-display",
+          "gtk"
+        ]
+      ],
+      "shutdown_command": "echo 'packer' | sudo -S shutdown -P now",
+      "ssh_password": "vagrant",
+      "ssh_timeout": "3h",
+      "ssh_username": "vagrant",
+      "type": "qemu",
+      "vm_name": "metasploitable3-ub1404"
+    }
+  ],
+  "post-processors": [
+    {
+      "keep_input_artifact": false,
+      "output": "{{template_dir}}/../builds/ubuntu_1404_{{.Provider}}_{{user `box_version`}}.box",
+      "type": "vagrant"
+    }
+  ],
+  "provisioners": [
+    {
+      "cookbook_paths": [
+        "{{template_dir}}/../../chef/cookbooks"
+      ],
+      "run_list": [
+        "apt::default",
+        "metasploitable::users",
+        "metasploitable::mysql",
+        "metasploitable::apache_continuum",
+        "metasploitable::apache",
+        "metasploitable::php_545",
+        "metasploitable::phpmyadmin",
+        "metasploitable::proftpd",
+        "metasploitable::docker",
+        "metasploitable::samba",
+        "metasploitable::sinatra",
+        "metasploitable::unrealircd",
+        "metasploitable::chatbot",
+        "metasploitable::payroll_app",
+        "metasploitable::readme_app",
+        "metasploitable::cups",
+        "metasploitable::drupal",
+        "metasploitable::knockd",
+        "metasploitable::iptables",
+        "metasploitable::flags",
+        "metasploitable::ifnames"
+      ],
+      "type": "chef-solo",
+      "version": "13.8.5"
+    }
+  ],
+  "variables": {
+    "box_version": "0.1.12",
+    "iso_checksum": "ababb88a492e08759fddcf4f05e5ccc58ec9d47fa37550d63931d0a5fa4f7388",
+    "iso_url": "http://old-releases.ubuntu.com/releases/14.04.0/ubuntu-14.04-server-amd64.iso"
+  }
+}
+
